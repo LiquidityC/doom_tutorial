@@ -47,13 +47,13 @@ static void draw(SDL *sdl, Player *p)
     SDL_SetRenderDrawColor(sdl->renderer, 255, 0, 0, 255);
     SDL_RenderDrawLine(sdl->renderer, wx[0], wy[0], wx[1], wy[1]);
 
-    /* Render player */
+    /* Render player (static) */
     SDL_SetRenderDrawColor(sdl->renderer, 255, 255, 255, 255);
     SDL_RenderDrawPoint(sdl->renderer, HSW, HSH);
 
-    /* Render direction indicator */
+    /* Render direction indicator (static) */
     SDL_SetRenderDrawColor(sdl->renderer, 0, 255, 0, 255);
-    SDL_RenderDrawPoint(sdl->renderer, HSW, HSH + 5);
+    SDL_RenderDrawPoint(sdl->renderer, HSW, HSH - 5);
 }
 
 int main(void)

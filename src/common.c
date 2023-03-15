@@ -96,18 +96,25 @@ void controller_input(Controller *ctrl, SDL_Event *e)
 void player_move(Player *player, Controller *ctrl)
 {
     player->a += ctrl->xrot;
+
+    /* Ensure that angle stays between 0-359 */
     if (player->a < 0)
         player->a += 360;
     if (player->a >= 360)
         player->a -= 360;
 
+    /* Calculate movement vector from current angle */
     float dx = sin(rad(player->a))*5.0;
     float dy = cos(rad(player->a))*5.0;
 
+    /* Move back and forth */
     if (ctrl->forward) { player->x += dx; player->y += dy; }
     if (ctrl->backward) { player->x -= dx; player->y -= dy; }
+
+    /* Strafe left/right */
     if (ctrl->right) { player->x += dy; player->y -= dx; }
     if (ctrl->left) { player->x -= dy; player->y += dx; }
+
     player->l = clamp(player->l+ctrl->yrot, -120, 120);
     if (ctrl->up) { player->z -= 4; }
     if (ctrl->down) { player->z += 4; }
