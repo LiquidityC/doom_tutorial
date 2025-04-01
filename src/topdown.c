@@ -1,5 +1,4 @@
-#include "SDL_render.h"
-#include "SDL_timer.h"
+#include <SDL3/SDL.h>
 #include "common.h"
 
 #define res     2
@@ -45,15 +44,15 @@ static void draw(SDL *sdl, Player *p)
 
     /* Render wall */
     SDL_SetRenderDrawColor(sdl->renderer, 255, 0, 0, 255);
-    SDL_RenderDrawLine(sdl->renderer, wx1, wy1, wx2, wy2);
+    SDL_RenderLine(sdl->renderer, wx1, wy1, wx2, wy2);
 
     /* Render player */
     SDL_SetRenderDrawColor(sdl->renderer, 255, 255, 255, 255);
-    SDL_RenderDrawPoint(sdl->renderer, px, py);
+    SDL_RenderPoint(sdl->renderer, px, py);
 
     /* Render direction indicator */
     SDL_SetRenderDrawColor(sdl->renderer, 0, 255, 0, 255);
-    SDL_RenderDrawPoint(sdl->renderer, rx, ry);
+    SDL_RenderPoint(sdl->renderer, rx, ry);
 }
 
 int main(void)
@@ -73,7 +72,7 @@ int main(void)
     while (!quit) {
         start = SDL_GetPerformanceCounter();
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
+            if (e.type == SDL_EVENT_QUIT) {
                 quit = true;
             }
             controller_input(&ctrl, &e);

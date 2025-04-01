@@ -1,8 +1,7 @@
 #include "common.h"
-#include "SDL_events.h"
-#include "SDL_render.h"
-#include "SDL_video.h"
+#include <SDL3/SDL.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void sdl_perror(char *func)
 {
@@ -19,21 +18,21 @@ void sdl_fatal(char *func)
 void sdl_init(SDL *sdl, int sw, int sh, float scale)
 {
     memset(sdl, 0, sizeof(SDL));
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
         sdl_perror("SDL_Init");
     }
 
-    sdl->window = SDL_CreateWindow("Doom", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, sw*scale, sh*scale, 0);
+    sdl->window = SDL_CreateWindow("Doom", sw*scale, sh*scale, 0);
     if (!sdl->window) {
         sdl_fatal("SDL_CreateWindow");
     }
 
-    sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_ACCELERATED);
+    sdl->renderer = SDL_CreateRenderer(sdl->window, NULL);
     if (!sdl->renderer) {
         sdl_fatal("SDL_CreateWindow");
     }
-    SDL_RenderSetScale(sdl->renderer, scale, scale);
-    SDL_SetRelativeMouseMode(true);
+    SDL_SetRenderScale(sdl->renderer, scale, scale);
+    SDL_SetWindowRelativeMouseMode(sdl->window, true);
 
     sdl->initiated = true;
 }
@@ -61,22 +60,22 @@ void controller_input(Controller *ctrl, SDL_Event *e)
     ctrl->xrot = 0;
     ctrl->yrot = 0;
 
-    if (e->type == SDL_KEYDOWN || e->type == SDL_KEYUP) {
-        bool val = e->type == SDL_KEYDOWN;
-        switch (e->key.keysym.sym) {
-            case SDLK_w:
+    if (e->type == SDL_EVENT_KEY_DOWN || e->type == SDL_EVENT_KEY_UP) {
+        bool val = e->type == SDL_EVENT_KEY_DOWN;
+        switch (e->key.key) {
+            case SDLK_W:
                 ctrl->forward = val;
                 break;
-            case SDLK_s:
+            case SDLK_S:
                 ctrl->backward = val;
                 break;
-            case SDLK_e:
+            case SDLK_E:
                 ctrl->right = val;
                 break;
-            case SDLK_a:
+            case SDLK_A:
                 ctrl->left = val;
                 break;
-            case SDLK_d:
+            case SDLK_D:
                 ctrl->right = val;
                 break;
             case SDLK_SPACE:
@@ -87,7 +86,7 @@ void controller_input(Controller *ctrl, SDL_Event *e)
                 break;
         }
     }
-    if (e->type == SDL_MOUSEMOTION) {
+    if (e->type == SDL_EVENT_MOUSE_MOTION) {
         ctrl->xrot = e->motion.xrel * 2;
         ctrl->yrot = -e->motion.yrel * 2;
     }
